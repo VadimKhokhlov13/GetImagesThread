@@ -6,12 +6,6 @@ submitLinkButton.addEventListener('click', async function() {
     // let threadLink = threadLinkInput.value;
     let threadLink = 'https://2ch.hk/au/res/5437304.html';
     getImagesLinks(threadLink).then(response => {
-        // let bases64 = JSON.parse(response);
-        // bases64.forEach(function(base64) {
-        //     let image = new Image();
-        //     image.src = 'data:image/png;base64,' + base64;
-        //     document.body.appendChild(image);
-        // })
         console.log(response);
     });
 });
@@ -40,15 +34,14 @@ async function getImagesLinks(threadLink) {
 }
 
 async function getImagesData(imgLinks) {
-    let imagesFunc = getImagesFunction(imgLinks);
-    let isReady = await seqRunner(imagesFunc).then(function(data) {
-        return true;
-    })
-    return isReady;
+    for (let i = 0; i < imgLinks.length; i++) {
+        await getImageData(imgLinks[i]);   
+    }
+    return true;
 }
 
 function getImageData(imgLink) {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function(resolve) {
         let response = await fetch('/img', {
         method: 'post',
         headers: {
@@ -61,20 +54,3 @@ function getImageData(imgLink) {
         resolve();
     })
 }
-
-function getImagesFunction(links) {
-    let deeds = [];
-    links.forEach(function(link) {
-        deeds.push({func: getImageData, param: link})
-    });
-    return deeds;
-}
-
-function seqRunner(deeds) {
-    return deeds.reduce(function(p, deed) {
-        return p.then(function(data) {
-            return deed.func(deed.param);
-        });
-    }, Promise.resolve());
-}
-
