@@ -3,10 +3,10 @@ const needle = require('needle');
 async function getImagesLinks(threadLink) {
     if(validateLink(threadLink)) {
         let html = await getHtmlThread(threadLink);
-        let links = parseHtml(html);
-        console.log(links);
+        let imgLinks = parseHtml(html);
+        
         // let data = await getImagesData(links);
-        return links;
+        return imgLinks;
     } else {
         return 'Неправильная ссылка';
     }
@@ -29,7 +29,7 @@ function getHtmlThread(threadLink) {
     return new Promise(function (resolve, reject) {
         needle.get(threadLink, async (err, res) => {
             if (err) throw err;
-
+            resolve(res.body);
             // let base64 = Buffer.from(res.body).toString('base64');
             // resolve(base64);
         });
@@ -37,7 +37,7 @@ function getHtmlThread(threadLink) {
 }
 
 function parseHtml(html) {
-    let links = html.match(/\/gg\/src\/\d*\/\d*.jpg/g);
+    let links = html.match(/\/au\/src\/\d*\/\d*.jpg/g);
     if (!links) {
         return 1;
     }
@@ -59,16 +59,15 @@ async function getImagesData(links) {
     return dataImg;
 }
 
-// function getImageData(link, data = []) {
-//     return new Promise(function(resolve, reject) {
-//         needle(link, (err, res) => {
-//             if (err) throw err;
-//             let base64 = Buffer.from(res.body).toString('base64');
-//             data.push(base64);
-//             resolve(data);
-//         })
-//     })
-// }
+function getImageData(link) {
+    return new Promise(function(resolve, reject) {
+        needle(link, (err, res) => {
+            if (err) throw err;
+            let base64 = Buffer.from(res.body).toString('base64');
+            resolve(base64);
+        })
+    })
+}
 
 function getImagesFunction(links) {
     let deeds = [];
@@ -86,4 +85,4 @@ function seqRunner(deeds) {
     }, Promise.resolve());
 }
 
-module.exports = { getImagesLinks }
+module.exports = { getImagesLinks, getImageData }

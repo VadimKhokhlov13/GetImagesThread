@@ -20,7 +20,7 @@ app.post('/links', async (req, res) => {
 app.post('/img', async (req, res) => {
     let imgLink = req.body.imgLink;
     let imgData = await getImageData(imgLink);
-    res.send(JSON.stringify(imgData));
+    res.send(imgData);
 });
 
 app.listen(port, () => {
