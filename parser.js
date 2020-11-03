@@ -8,7 +8,7 @@ async function getImagesLinks(threadLink) {
 
 function getHtmlThread(threadLink) {
     return new Promise(function (resolve) {
-        needle.get(threadLink, async (err, res) => {
+        needle.get(threadLink, (err, res) => {
             if (err) throw err;
             resolve(res.body);
         });
